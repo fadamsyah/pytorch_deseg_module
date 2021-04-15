@@ -6,13 +6,12 @@ import torch
 from torch.backends import cudnn
 from matplotlib import colors
 
-from backbone import EfficientDetBackbone
 import cv2
 import numpy as np
 
-from efficientdet.utils import BBoxTransform, ClipBoxes
-from utils.utils import preprocess, invert_affine, postprocess, STANDARD_COLORS, standard_to_bgr, get_index_label, plot_one_box
-from utils.utils import boolean_string
+from ..backbone import EfficientDetBackbone
+from ..efficientdet.utils import BBoxTransform, ClipBoxes
+from ..utils.utils import preprocess, invert_affine, postprocess
 
 class DetectionModule():
     def __init__(self, compound_coef, obj_list, weights_path, use_cuda,
@@ -38,9 +37,6 @@ class DetectionModule():
         
         # Object list
         self.obj_list = obj_list
-        
-        # Color List
-        self.color_list = standard_to_bgr(STANDARD_COLORS)
     
     def __call__(self, img_path, use_url,
                  threshold=0.5, iou_threshold=0.5):
