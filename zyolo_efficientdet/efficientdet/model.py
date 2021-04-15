@@ -1,3 +1,6 @@
+# Author: Zylo117
+# Modified by fadamsyah
+
 import torch.nn as nn
 import torch
 from torchvision.ops.boxes import nms as nms_torch

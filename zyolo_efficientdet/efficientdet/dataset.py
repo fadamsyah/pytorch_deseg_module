@@ -1,3 +1,6 @@
+# Author: Zylo117
+# Modified by fadamsyah
+
 import os
 import torch
 import numpy as np
