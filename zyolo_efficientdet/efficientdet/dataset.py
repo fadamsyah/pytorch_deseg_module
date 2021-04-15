@@ -82,6 +82,68 @@ class CocoDataset(Dataset):
 
         return annotations
 
+class CocoAlbumentationsDataset(CocoDataset):
+    def __init__(self, root_dir, set='train2017', transform=None, img_size=512, resize=True):
+        super().__init__(root_dir, set, transform)
+        self.resizer = Resizer(img_size)
+        self.resize = resize
+
+    def __getitem__(self, idx):
+
+        img = self.load_image(idx)
+        annot = self.load_annotations(idx)
+        
+        if self.transform:
+            # The transformed data should have at least 1 bounding box
+            while True:
+                category_ids = [ann[-1] for ann in annot]
+                temp = self.transform(image=img, bboxes=annot[:, :4],
+                                      category_ids=category_ids)
+                if len(temp['bboxes']) > 0:
+                    break
+            
+            # Get the transformed image
+            img = temp['image']
+            
+            # Get the transformed annotations
+            annot = np.empty((len(temp['bboxes']), 5))
+            annot[:, :4] = temp['bboxes']
+            annot[:, 4] = temp['category_ids']
+        
+        # transform from [x, y, w, h] to [x1, y1, x2, y2]
+        annot[:, 2] = annot[:, 0] + annot[:, 2]
+        annot[:, 3] = annot[:, 1] + annot[:, 3]
+        
+        sample = {'img': img, 'annot': annot}
+        
+        if self.resize:
+            sample = self.resizer(sample)
+        
+        return sample
+
+    def load_annotations(self, image_index):
+        # get ground truth annotations
+        annotations_ids = self.coco.getAnnIds(imgIds=self.image_ids[image_index], iscrowd=False)
+        annotations = np.zeros((0, 5))
+
+        # some images appear to miss annotations
+        if len(annotations_ids) == 0:
+            return annotations
+
+        # parse annotations
+        coco_annotations = self.coco.loadAnns(annotations_ids)
+        for idx, a in enumerate(coco_annotations):
+
+            # some annotations have basically no width / height, skip them
+            if a['bbox'][2] < 1 or a['bbox'][3] < 1:
+                continue
+
+            annotation = np.zeros((1, 5))
+            annotation[0, :4] = a['bbox']
+            annotation[0, 4] = a['category_id'] - 1
+            annotations = np.append(annotations, annotation, axis=0)
+
+        return annotations
 
 def collater(data):
     imgs = [s['img'] for s in data]
