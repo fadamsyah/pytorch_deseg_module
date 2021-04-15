@@ -393,6 +393,8 @@ class Classifier(nn.Module):
             [nn.ModuleList([nn.BatchNorm2d(in_channels, momentum=0.01, eps=1e-3) for i in range(num_layers)]) for j in
              range(pyramid_levels)])
         self.header = SeparableConvBlock(in_channels, num_anchors * num_classes, norm=False, activation=False)
+        self.header.pointwise_conv.conv.weight.data.fill_(0)
+        self.header.pointwise_conv.conv.bias.data.fill_(-4.59)
         self.swish = MemoryEfficientSwish() if not onnx_export else Swish()
 
     def forward(self, inputs):
