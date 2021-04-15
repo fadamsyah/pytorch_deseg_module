@@ -18,7 +18,6 @@ import torch
 import yaml
 from tqdm import tqdm
 from pycocotools.coco import COCO
-from utils.utils import CustomCOCOeval
 
 from zyolo_efficientdet.backbone import EfficientDetBackbone
 from zyolo_efficientdet.efficientdet.utils import BBoxTransform, ClipBoxes
