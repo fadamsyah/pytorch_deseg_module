@@ -1,4 +1,4 @@
-# zyolo_efficiendet
+# zyolo_efficientdet
 
 ## Introduction
 This repository is a modifcation of [zylo117/Yet-Another-EfficientDet-Pytorch](https://github.com/zylo117/Yet-Another-EfficientDet-Pytorch). The main contribution of this repository is accommodating the use of the [Albumentations](https://github.com/albumentations-team/albumentations) library. The details will be explained in the following explanation.

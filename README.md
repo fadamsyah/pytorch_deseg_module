@@ -1,9 +1,7 @@
 # zyolo_efficientdet
 
-## Main References
-- [zylo117/Yet-Another-EfficientDet-Pytorch](https://github.com/zylo117/Yet-Another-EfficientDet-Pytorch)
-- [mnslarcher/kmeans-anchors-ratios](https://github.com/mnslarcher/kmeans-anchors-ratios)
-- [albumentations-team/albumentations](https://github.com/albumentations-team/albumentations)
+## Introduction
+This repository is a modifcation of [zylo117/Yet-Another-EfficientDet-Pytorch](https://github.com/zylo117/Yet-Another-EfficientDet-Pytorch). The main contribution of this repository is accommodating the use of the [Albumentations](https://github.com/albumentations-team/albumentations) library. The details will be explained in the README.md file inside the zyolo_efficientdet folder.
 
 ## Note
 The details of modifications from the original repository will be published soon ...
