@@ -20,7 +20,7 @@ This repository is a modifcation of [zylo117/Yet-Another-EfficientDet-Pytorch](h
 
 ### utils/utils.py
 
-### coco_eval
+### coco_eval.py
     # Add arguments of set_name and on_every_class
     ap.add_argument('--set_name', type=str, default='val_set', help='set name')
     ap.add_argument('--on_every_class', type=boolean_string, default=False, help='evaluate AP & AR for every class')
@@ -38,3 +38,5 @@ This repository is a modifcation of [zylo117/Yet-Another-EfficientDet-Pytorch](h
             coco_eval.accumulate()
             coco_eval.summarize()
       ...
+
+### train.py
