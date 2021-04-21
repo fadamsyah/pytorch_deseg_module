@@ -19,6 +19,22 @@ This repository is a modifcation of [zylo117/Yet-Another-EfficientDet-Pytorch](h
             ...
 
 ### utils/utils.py
+    # Open an image from url
+    def url_to_image(url):
+        ...
+    
+    # Add the use_url argument on the preprocess method
+    def preprocess(..., use_url=False):
+        if not use_url:
+            ori_imgs = [cv2.imread(img_path) for img_path in image_path]
+        else:
+            ori_imgs = [url_to_image(img_path) for img_path in image_path]
+        ...
+
+    # A class inheriting the COCOeval
+    # which can be used to evaluate performance on every class
+    class CustomCOCOeval(COCOeval):
+        ...
 
 ### coco_eval.py
     # Add arguments of set_name and on_every_class
