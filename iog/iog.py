@@ -15,7 +15,7 @@ from .networks.mainnetwork import *
 class IoGNetwork(object):
     def __init__(self, nInputChannels=5, num_classes=1, backbone='resnet101',
                  output_stride=16, sync_bn=None, freeze_bn=False,
-                 pretrain_path='models/IOG_PASCAL_SBD.pth', device='cpu',
+                 pretrain_path='models/IOG_PASCAL_SBD.pth', use_cuda=False,
                  interpolation=cv2.INTER_LINEAR):
         
         # Initialize the  network
@@ -30,10 +30,13 @@ class IoGNetwork(object):
         print(f"Initializing weights from {pretrain_path}")
         pretrain_dict = torch.load(pretrain_path)       
         self.net.load_state_dict(pretrain_dict)
-        self.net.to(device)
         
         # Setting the model to the evaluation mode
         self.net.eval()
+        
+        # use_cuda
+        self.use_cuda = use_cuda
+        if self.use_cuda: self.net = self.net.cuda()
         
         # Define the transformations
         self.transforms = transforms.Compose([
@@ -71,9 +74,10 @@ class IoGNetwork(object):
             samples.append(trfs(sample))
                 
         with torch.no_grad():
-            inputs = torch.stack([sample['concat'] for sample in samples], 0).to(device)
+            inputs = torch.stack([sample['concat'] for sample in samples], 0)
+            if self.use_cuda: inputs = inputs.cuda()
             outputs = net.forward(inputs)[-1]
-            preds = np.stack([np.transpose(output, (1,2,0)) for output in outputs.data.numpy()], 0)
+            preds = np.stack([np.transpose(output, (1,2,0)) for output in outputs.data.cpu().numpy()], 0)
             preds = 1. / (1. + np.exp(-preds))
             preds = preds[..., 0]
             results = np.zeros_like(img[..., 0])
