@@ -2,7 +2,6 @@ import torch, cv2
 import numpy.random as random
 import numpy as np
 import scipy.misc as sm
-import .helpers as helpers
 from .helpers import *
 
 class ScaleNRotate(object):
@@ -102,14 +101,14 @@ class FixedResize(object):
                     sample[elem] = np.zeros(output_size, dtype=np.float32)
                     for ii, crop in enumerate(tmp):
                         if self.flagvals is None:
-                            sample[elem][..., ii] = helpers.fixed_resize(crop, self.resolutions[elem])
+                            sample[elem][..., ii] = fixed_resize(crop, self.resolutions[elem])
                         else:
-                            sample[elem][..., ii] = helpers.fixed_resize(crop, self.resolutions[elem], flagval=self.flagvals[elem])
+                            sample[elem][..., ii] = fixed_resize(crop, self.resolutions[elem], flagval=self.flagvals[elem])
                 else:
                     if self.flagvals is None:
-                        sample[elem] = helpers.fixed_resize(sample[elem], self.resolutions[elem])
+                        sample[elem] = fixed_resize(sample[elem], self.resolutions[elem])
                     else:
-                        sample[elem] = helpers.fixed_resize(sample[elem], self.resolutions[elem], flagval=self.flagvals[elem])
+                        sample[elem] = fixed_resize(sample[elem], self.resolutions[elem], flagval=self.flagvals[elem])
             else:
                 del sample[elem]
 
@@ -160,8 +159,8 @@ class IOGPoints(object):
         if np.max(_target) == 0:
             sample['IOG_points'] = np.zeros([targetshape[0],targetshape[1],2], dtype=_target.dtype) #  TODO: handle one_mask_per_point case
         else:
-            _points = helpers.iog_points(_target, self.pad_pixel)
-            sample['IOG_points'] = helpers.make_gt(_target, _points, sigma=self.sigma, one_mask_per_point=False)
+            _points = iog_points(_target, self.pad_pixel)
+            sample['IOG_points'] = make_gt(_target, _points, sigma=self.sigma, one_mask_per_point=False)
 
         return sample
 
@@ -225,14 +224,14 @@ class CropFromMask(object):
                     if np.max(_target[..., k]) == 0:
                         _crop.append(np.zeros(_tmp_img.shape, dtype=_img.dtype))
                     else:
-                        _crop.append(helpers.crop_from_mask(_tmp_img, _tmp_target, relax=self.relax, zero_pad=self.zero_pad))
+                        _crop.append(crop_from_mask(_tmp_img, _tmp_target, relax=self.relax, zero_pad=self.zero_pad))
             else:
                 for k in range(0, _target.shape[-1]):
                     if np.max(_target[..., k]) == 0:
                         _crop.append(np.zeros(_img.shape, dtype=_img.dtype))
                     else:
                         _tmp_target = _target[..., k]
-                        _crop.append(helpers.crop_from_mask(_img, _tmp_target, relax=self.relax, zero_pad=self.zero_pad))
+                        _crop.append(crop_from_mask(_img, _tmp_target, relax=self.relax, zero_pad=self.zero_pad))
             if len(_crop) == 1:
                 sample['crop_' + elem] = _crop[0]
             else:

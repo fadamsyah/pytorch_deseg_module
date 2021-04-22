@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mypath import Path
+from ..mypath import Path
 from .backbone import build_backbone
 from .CoarseNet import CoarseNet
 from .FineNet import FineNet

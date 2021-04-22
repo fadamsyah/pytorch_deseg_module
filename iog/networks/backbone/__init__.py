@@ -1,4 +1,4 @@
-from networks.backbone import resnet
+from . import resnet
 
 def build_backbone(backbone, output_stride, BatchNorm,nInputChannels,pretrained):
     if backbone == 'resnet101':
