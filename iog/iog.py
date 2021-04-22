@@ -71,12 +71,12 @@ class IoGNetwork(object):
             void_pixels = 1 - bbox
             
             sample = {'image': img, 'gt': bbox, 'void_pixels': void_pixels}
-            samples.append(trfs(sample))
+            samples.append(self.transforms(sample))
                 
         with torch.no_grad():
             inputs = torch.stack([sample['concat'] for sample in samples], 0)
             if self.use_cuda: inputs = inputs.cuda()
-            outputs = net.forward(inputs)[-1]
+            outputs = self.net.forward(inputs)[-1]
             preds = np.stack([np.transpose(output, (1,2,0)) for output in outputs.data.cpu().numpy()], 0)
             preds = 1. / (1. + np.exp(-preds))
             preds = preds[..., 0]
