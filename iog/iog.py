@@ -16,7 +16,10 @@ class IoGNetwork(object):
     def __init__(self, nInputChannels=5, num_classes=1, backbone='resnet101',
                  output_stride=16, sync_bn=None, freeze_bn=False,
                  pretrain_path='models/IOG_PASCAL_SBD.pth', use_cuda=False,
-                 interpolation=cv2.INTER_LINEAR):
+                 interpolation=cv2.INTER_LINEAR, threshold=None):
+        
+        # Threshold
+        self.threshold = threshold
         
         # Initialize the  network
         self.net = Network(nInputChannels=nInputChannels,
@@ -86,6 +89,9 @@ class IoGNetwork(object):
                 bbox = get_bbox(gt, pad=30, zero_pad=True)
                 results = results + crop2fullmask(pred, bbox, gt, zero_pad=True, relax=0,mask_relax=False) 
                 results[results > 1.] = 1.
+        
+        if self.threshold is not None:
+            results[results < self.threshold] = 0.
         
         return results
                     
