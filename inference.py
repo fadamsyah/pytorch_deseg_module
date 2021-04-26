@@ -3,20 +3,23 @@ import json
 import cv2
 import numpy as np
 import os
+import yaml
 
 from zyolo_efficientdet import DetectionModule
+from zyolo_efficientdet.utils.utils import boolean_string
 from iog import IoGNetwork
 
 def get_args():
     parser = argparse.ArgumentParser('Deteksi Sel Telur Fasciola')
-    parser.add_argument('--img_path', type=str, default='datasets/malaria/train/d9345456-b76d-46cc-b81e-46d4a0a7b652.png',
+    parser.add_argument('--project', type=str, default='sel_telur', help='object detection parameters')
+    parser.add_argument('--img_path', type=str, default='test/sample.jpg',
                         help='path image nya')
     parser.add_argument('--use_url', type=boolean_string, default=False,
                         help='True apabila menggunakan url untuk load gambarnya. False kalau load gambar dari local')
     parser.add_argument('--use_cuda', type=boolean_string, default=False,
                         help='True kalau mau pake GPU yang ada CUDA nya. False kalau pakai CPU aja')
     parser.add_argument('--det_compound_coef', type=int, default=2, help='coefficients of efficientdet')
-    parser.add_argument('--det_weights_path', type=str, default='weights/efficientdet-d2_15_1712.pth',
+    parser.add_argument('--det_weights_path', type=str, default='weights/efficientdet-d2_80_4536.pth',
                         help='EfficientDet weights')
     parser.add_argument('--det_threshold', type=float, default=0.5,
                         help='persentase output min. untuk dianggap sebagai objek (0 - 1)')
@@ -30,13 +33,19 @@ def get_args():
 
 if __name__ == "__main__":
     opt = get_args()
+    params = yaml.safe_load(open(f'projects/{opt.project}.yml').read())
     
     # Create the EfficientNet model
-    detector = DetectionModule(opt.det_compound_coef, obj_list, opt.det_weights_path,
-                               opt.use_cuda, anchors_ratios, anchors_scales)
+    detector = DetectionModule(opt.det_compound_coef, params['obj_list'],
+                               opt.det_weights_path, opt.use_cuda,
+                               eval(params['anchors_ratios']),
+                               eval(params['anchors_scales']))
     
     # Create the IoG segmentation model
-    iog = IoGNetwork(pretrain_path=opt.iog_weights_path, use_cuda=opt.use_cuda)
+    iog = IoGNetwork(pretrain_path=opt.iog_weights_path,
+                     interpolation=cv2.INTER_CUBIC,
+                     use_cuda=opt.use_cuda,
+                     threshold=0.9)
     
     # Detect objects
     det_outputs = detector(opt.img_path, opt.use_url,
@@ -44,3 +53,15 @@ if __name__ == "__main__":
     
     # Segment objects
     iog_outputs = iog(opt.img_path, det_outputs)
+    iog_outputs = (iog_outputs * 255).astype(np.uint8)
+    iog_outputs = cv2.cvtColor(iog_outputs, cv2.COLOR_GRAY2RGB)
+    
+    img = cv2.imread(opt.img_path)
+    bbox = det_outputs['analysis_results'][0]['bbox']
+    concatenated = np.concatenate(
+                    (img[bbox['ymin']:bbox['ymax'], bbox["xmin"]:bbox["xmax"]],
+                     iog_outputs[bbox['ymin']:bbox['ymax'], bbox["xmin"]:bbox["xmax"]]),
+                    axis=1)
+    
+    cv2.imwrite(f'test/result_1.jpg', concatenated)
+    cv2.imwrite(f'test/result_2.jpg', iog_outputs)
