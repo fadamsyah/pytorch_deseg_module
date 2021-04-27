@@ -56,12 +56,24 @@ if __name__ == "__main__":
     iog_outputs = (iog_outputs * 255).astype(np.uint8)
     iog_outputs = cv2.cvtColor(iog_outputs, cv2.COLOR_GRAY2RGB)
     
-    img = cv2.imread(opt.img_path)
-    bbox = det_outputs['analysis_results'][0]['bbox']
-    concatenated = np.concatenate(
-                    (img[bbox['ymin']:bbox['ymax'], bbox["xmin"]:bbox["xmax"]],
-                     iog_outputs[bbox['ymin']:bbox['ymax'], bbox["xmin"]:bbox["xmax"]]),
-                    axis=1)
+    # Get the image name
+    base_img_name = os.path.basename(opt.img_path)
+    base_img_name, _ = os.path.splitext(base_img_name)
     
-    cv2.imwrite(f'test/result_1.jpg', concatenated)
-    cv2.imwrite(f'test/result_2.jpg', iog_outputs)
+    # Save the segmentation output
+    cv2.imwrite(f'test/segmentation/{base_img_name}.jpg', iog_outputs)
+    
+    # Save the bounding-boxes output
+    json_object = json.dumps(det_outputs, indent = 4)
+    with open(f'test/bbs/{base_img_name}.json', "w") as outfile: 
+        outfile.write(json_object)
+    
+    # img = cv2.imread(opt.img_path)
+    # bbox = det_outputs['analysis_results'][0]['bbox']
+    # concatenated = np.concatenate(
+    #                 (img[bbox['ymin']:bbox['ymax'], bbox["xmin"]:bbox["xmax"]],
+    #                  iog_outputs[bbox['ymin']:bbox['ymax'], bbox["xmin"]:bbox["xmax"]]),
+    #                 axis=1)
+    
+    # cv2.imwrite(f'test/result_1.jpg', concatenated)
+    # cv2.imwrite(f'test/result_2.jpg', iog_outputs)
