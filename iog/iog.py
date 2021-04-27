@@ -75,6 +75,9 @@ class IoGNetwork(object):
             
             sample = {'image': img, 'gt': bbox, 'void_pixels': void_pixels}
             samples.append(self.transforms(sample))
+            
+        if len(samples) == 0:
+            return np.zeros_like(img[..., 0])
                 
         with torch.no_grad():
             inputs = torch.stack([sample['concat'] for sample in samples], 0)
