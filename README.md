@@ -1,7 +1,7 @@
 # zyolo_efficientdet
 
 ## Introduction
-This repository is made as part of my internship at [Neurabot](neurabot.io). Shortly, the repository is used to detect objects in images in the field of medical imaging and pathology. Croped images then are segmented using an interactive segmentation technique. The object detection model needs data to learn whereas the segmentation model doesn't require any. The main references are:
+This repository is made as part of my internship at [Neurabot](https://neurabot.io). Shortly, the repository is used to detect objects in images in the field of medical imaging and pathology. Croped images then are segmented using an interactive segmentation technique. The object detection model needs data to learn whereas the segmentation model doesn't require any. The main references are:
 - [zylo117/Yet-Another-EfficientDet-Pytorch](https://github.com/zylo117/Yet-Another-EfficientDet-Pytorch)
 - [shiyinzhang/Inside-Outside-Guidance](https://github.com/shiyinzhang/Inside-Outside-Guidance)
 
