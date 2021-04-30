@@ -1,4 +1,4 @@
-# zyolo_efficientdet
+# pytorch_deseg_module
 
 ## Introduction
 This repository is made as part of my internship at [Neurabot](https://neurabot.io). Shortly, the repository is used to detect objects in images in the field of medical imaging and pathology. Croped images then are segmented using an interactive segmentation technique. The object detection model needs data to learn whereas the segmentation model doesn't require any. The main references are:
@@ -41,3 +41,6 @@ Tips for training:
     **Note**: You **MUST** visualize the augmented data to determine whether the augmentation process is relevant to your case. If you add improper augmentations to your training set, the result will be most likely **bad**.
 2. In the begining of your training process, use `head_only=True` to train the head without updating the backbone and neck. Then, change to `head_only=False` after you see a saturation trend at training loss.
 3. You may want to see [mnslarcher/kmeans-anchors-ratios](https://github.com/mnslarcher/kmeans-anchors-ratios) to determine optimal anchors ratios and scales.
+
+## Inference
+Coming soon ...
