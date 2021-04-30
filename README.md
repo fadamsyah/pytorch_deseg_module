@@ -19,10 +19,8 @@ torchvision
 
 ## Installation
 1. You need to install the requirements first.
-2. Clone this repository `git clone --depth 1 https://github.com/fadamsyah/zyolo_efficientdet.git`
-3. Install the cloned repository `pip install path/<zyolo_efficientdet>`
-
-**Note:** Until now, you won't be able to install this repository because the `setup.py` has not been implemented. Please wait ...
+2. Clone this repository `git clone --depth 1 https://github.com/fadamsyah/pytorch_deseg_module.git`
+3. Install the cloned repository `pip install <path>/pytorch_deseg_module`
 
 ## EfficientDet Training
 For training, please refer to the [original repository](https://github.com/zylo117/Yet-Another-EfficientDet-Pytorch). But, you should pay attention to the augmentation parameter on `projects/<project>.yml` ([examples](projects)).
