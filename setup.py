@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.1'
+VERSION = '0.1.0'
 DESCRIPTION = 'Detection and Segmentation Module'
 LONG_DESCRIPTION = 'The object detection module is obtained from Zyolo17 EfficientDet where the segmentation module is obtained from Inside-Outside-Guidance'
 
