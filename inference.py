@@ -5,9 +5,9 @@ import numpy as np
 import os
 import yaml
 
-from zyolo_efficientdet import DetectionModule
-from zyolo_efficientdet.utils.utils import boolean_string
-from iog import IoGNetwork
+from pytorch_deseg_module import DetectionModule
+from pytorch_deseg_module.zyolo_efficientdet.utils.utils import boolean_string
+from pytorch_deseg_module import IoGNetwork
 
 def get_args():
     parser = argparse.ArgumentParser('Deteksi Sel Telur Fasciola')

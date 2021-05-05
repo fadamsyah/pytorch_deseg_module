@@ -1,16 +1,6 @@
 # Author: Zylo117
 # Modified by fadamsyah
 
-"""
-COCO-Style Evaluations
-
-put images here datasets/your_project_name/val_set_name/*.jpg
-put annotations here datasets/your_project_name/annotations/instances_{val_set_name}.json
-put weights here /path/to/your/weights/*.pth
-change compound_coef
-
-"""
-
 import json
 import os
 
@@ -20,10 +10,10 @@ import yaml
 from tqdm import tqdm
 from pycocotools.coco import COCO
 
-from zyolo_efficientdet.backbone import EfficientDetBackbone
-from zyolo_efficientdet.efficientdet.utils import BBoxTransform, ClipBoxes
-from zyolo_efficientdet.utils.utils import preprocess, invert_affine, postprocess, boolean_string
-from zyolo_efficientdet.utils.utils import CustomCOCOeval
+from pytorch_deseg_module.zyolo_efficientdet.backbone import EfficientDetBackbone
+from pytorch_deseg_module.zyolo_efficientdet.efficientdet.utils import BBoxTransform, ClipBoxes
+from pytorch_deseg_module.zyolo_efficientdet.utils.utils import preprocess, invert_affine, postprocess, boolean_string
+from pytorch_deseg_module.zyolo_efficientdet.utils.utils import CustomCOCOeval
 
 ap = argparse.ArgumentParser()
 ap.add_argument('-p', '--project', type=str, default='coco', help='project file that contains parameters')

@@ -17,11 +17,11 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm.autonotebook import tqdm
 
-from zyolo_efficientdet.backbone import EfficientDetBackbone
-from zyolo_efficientdet.efficientdet.dataset import CocoDataset, CocoAlbumentationsDataset, Resizer, Normalizer, Augmenter, collater
-from zyolo_efficientdet.efficientdet.loss import FocalLoss
-from zyolo_efficientdet.utils.sync_batchnorm import patch_replication_callback
-from zyolo_efficientdet.utils.utils import replace_w_sync_bn, CustomDataParallel, get_last_weights, init_weights, boolean_string
+from pytorch_deseg_module.zyolo_efficientdet.backbone import EfficientDetBackbone
+from pytorch_deseg_module.zyolo_efficientdet.efficientdet.dataset import CocoDataset, CocoAlbumentationsDataset, Resizer, Normalizer, Augmenter, collater
+from pytorch_deseg_module.zyolo_efficientdet.efficientdet.loss import FocalLoss
+from pytorch_deseg_module.zyolo_efficientdet.utils.sync_batchnorm import patch_replication_callback
+from pytorch_deseg_module.zyolo_efficientdet.utils.utils import replace_w_sync_bn, CustomDataParallel, get_last_weights, init_weights, boolean_string
 
 import albumentations as A
 import cv2
