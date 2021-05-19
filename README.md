@@ -30,7 +30,7 @@ foo@bar:~$ pip install pytorch_deseg_module
 
 
 ## EfficientDet Training
-For training, please refer to the [original repository](https://github.com/zylo117/Yet-Another-EfficientDet-Pytorch). But, you should pay attention to the augmentation parameter on `projects/<project>.yml` ([examples](projects)).
+The pretrained weights are available on the [original repository](https://github.com/zylo117/Yet-Another-EfficientDet-Pytorch). For training, please refer to the original repository. But, you should pay attention to the augmentation parameter on `projects/<project>.yml` ([examples](projects)). You are not encouraged to train an EfficientDet model from scratch unless you have a lot of computing resources and data. From my experience, I only need to do the transfer learning technique to produce a considerably well and robust model.
 
 This is how you should prepare your folder for training a EfficientDet model:
 
