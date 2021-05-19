@@ -5,7 +5,7 @@ This repository is made as part of my internship at [Neurabot](https://neurabot.
 - [zylo117/Yet-Another-EfficientDet-Pytorch](https://github.com/zylo117/Yet-Another-EfficientDet-Pytorch)
 - [shiyinzhang/Inside-Outside-Guidance](https://github.com/shiyinzhang/Inside-Outside-Guidance)
 
-You can see modifications of the original repositories [here](zyolo_efficientdet/README.md) and [here](iog/README.md).
+You can see modifications of the original repositories [here](pytorch_deseg_module/zyolo_efficientdet/README.md) and [here](pytorch_deseg_module/iog/README.md).
 
 ## Requirements
 ```
@@ -18,12 +18,49 @@ torchvision
 ```
 
 ## Installation
-1. You need to install the requirements first.
+1. You need to install the **requirements** first.
 2. Clone this repository `git clone --depth 1 https://github.com/fadamsyah/pytorch_deseg_module.git`
-3. Install the cloned repository `pip install <path>/pytorch_deseg_module`
+3. Install the cloned repository `pip install pytorch_deseg_module`
+
+**Example**:
+```bash
+foo@bar:~$ git clone --depth 1 https://github.com/fadamsyah/pytorch_deseg_module.git
+foo@bar:~$ pip install pytorch_deseg_module
+```
+
 
 ## EfficientDet Training
 For training, please refer to the [original repository](https://github.com/zylo117/Yet-Another-EfficientDet-Pytorch). But, you should pay attention to the augmentation parameter on `projects/<project>.yml` ([examples](projects)).
+
+This is how you should prepare your folder for training a EfficientDet model:
+
+```
+# You are highly recommended to structure your project folder as follows
+project/
+    datasets/
+        {your_project_name}/
+            annotations/
+                - instances_train.json
+                - instances_val.json
+                - instances_test.json
+            train/
+                - *.jpg
+            val/
+                - *.jpg
+            test/
+                - *.jpg
+    logs/
+        # The training history will be written as the tensorboard format
+        {your_project_name}/
+            tensorboard/
+    projects/
+        # Put your project description here
+        - {your_project_name}.yml
+    weights/
+        # Parameters of the trained model will be automatically saved
+        - *.pth
+    efficientdet_train.py
+```
 
 Tips for training:
 1. **Augmentation**. In my opinion, some of the most useful augmentation schemes in the [albumentation](https://github.com/albumentations-team/albumentations) library are:
@@ -42,3 +79,11 @@ Tips for training:
 
 ## Inference
 Coming soon ...
+
+## TODO
+- [ ] Add a CLI example for training an EfficientDet model.
+- [ ] Add a CLI example for inferencing.
+- [ ] Add a code to visualize object detection dataset.
+- [ ] Save the last parameters & the best parameters when training `efficientdet_train.py`.
+- [ ] Generalize the [IoGNetwork](pytorch_deseg_module/iog/iog.py) for multi-class segmentation.
+- [ ] Use the PyTorch dataloader on [IoGNetwork](pytorch_deseg_module/iog/iog.py) to specify the batch_size when inferencing.
