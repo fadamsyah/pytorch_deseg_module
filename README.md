@@ -80,10 +80,23 @@ Tips for training:
 ## Inference
 Coming soon ...
 
+## CLI Examples
+```bash
+# Visualize a sample of dataset
+python efficientdet_dataset_viz.py -p ki67 --set_name val --transform False --resize False --idx 0
+
+# A sample training command
+python efficientdet_train.py -p ki67 -c 0 --head_only True --lr 5e-4 --weight_decay 1e-5 --batch_size 16 --load_weights weights.pth --num_epochs 20
+
+# Evaluate an EffDet model
+python efficientdet_coco_eval.py -p ki67 -c 0 -w weights.pth --set_name val --on_every_class True --cuda True
+
+# A sample inference
+python inference.py --project ki67 --img_path image.jpg --use_cuda True --det_compound_coef 0 --det_weights_path effdet_weights.pth --iog_weights_path iog_weights.pth
+```
+
 ## TODO
-- [ ] Add a CLI example for training an EfficientDet model.
-- [ ] Add a CLI example for inferencing.
-- [ ] Add a code to visualize object detection dataset.
+- [X] Add a code to visualize object detection dataset.
 - [ ] Save the last parameters & the best parameters when training `efficientdet_train.py`.
 - [ ] Generalize the [IoGNetwork](pytorch_deseg_module/iog/iog.py) for multi-class segmentation.
 - [ ] Use the PyTorch dataloader on [IoGNetwork](pytorch_deseg_module/iog/iog.py) to specify the batch_size when inferencing.
