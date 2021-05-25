@@ -27,6 +27,7 @@ def get_args():
     parser.add_argument('--transform', type=boolean_string, default=False,
                         help='whether to augment dataset as in the corresponding project file')
     parser.add_argument('--idx', type=int, default=0, help='choose a sample from dataset using this index')
+    parser.add_argument('--image_name', type=str, default=None, help='file name if want to save the visualization')
     args = parser.parse_args()
     return args
 
@@ -49,14 +50,26 @@ def visualize_bbox(img, bbox, class_name, color=(255, 0, 0), thickness=2):
     )
     return img
 
-def visualize(image, bboxes, category_ids, category_id_to_name):
+BBOX_COLORS = [(255, 0, 0),
+               (0, 255, 0),
+               (0, 0, 255),
+               (255, 0, 255),
+               (255, 255, 0),
+               (0, 255, 255),
+               (255, 128, 0),
+               (160, 82, 45)]
+               
+def visualize(image, bboxes, category_ids, category_id_to_name, image_name):
     img = np.array(image).copy()
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) * 255.
+    box_colors = {category_id: BBOX_COLORS[i % len(BBOX_COLORS)] for i, category_id in enumerate(category_id_to_name)}
     for bbox, category_id in zip(bboxes, category_ids):
         class_name = category_id_to_name[category_id]
-        img = visualize_bbox(img, bbox, class_name)
-    cv2.imshow('dataset visualization', img)
+        img = visualize_bbox(img, bbox, class_name, box_colors[category_id])
+    cv2.imshow('dataset visualization', img / 255.)
     cv2.waitKey(0)
+    if image_name is not None:
+        cv2.imwrite(image_name, img)
 
 if __name__ == '__main__':
     opt = get_args()
@@ -88,4 +101,5 @@ if __name__ == '__main__':
         sample['annot'],
         [math.ceil(annot[-1]) for annot in sample['annot']],
         {i: category for i, category in enumerate(params.obj_list)},
+        opt.image_name
     )
