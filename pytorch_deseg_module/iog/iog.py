@@ -34,8 +34,8 @@ class IoGDataset(Dataset):
         iog_input = {'image': self.image, 'gt': bbox, 'void_pixels': void_pixels}
         iog_input = self.transforms(iog_input)
         
-        return iog_input
-    
+        return iog_input['concat'], iog_input['gt'], iog_input['gt']# Ini seharusnya categories
+ 
     def change_image(self, image, annotations):
         self.image = image
         self.annotations = annotations
@@ -46,7 +46,8 @@ class IoGNetwork(object):
     def __init__(self, nInputChannels=5, num_classes=1, backbone='resnet101',
                  output_stride=16, sync_bn=None, freeze_bn=False,
                  pretrain_path='models/IOG_PASCAL_SBD.pth', use_cuda=False,
-                 interpolation=cv2.INTER_LINEAR, threshold=None):
+                 interpolation=cv2.INTER_LINEAR, threshold=None,
+                 batch_size=4, num_workers=4):
         
         # Threshold
         self.threshold = threshold
@@ -87,36 +88,41 @@ class IoGNetwork(object):
             tr.ConcatInputs(elems=('crop_image', 'IOG_points')),
             tr.ToTensor()])
         
+        # Create the dataset
         self.iog_dataset = IoGDataset(None, None, self.transforms)
+        
+        # dataloader parameters
+        self.batch_size = batch_size
+        self.num_workers = num_workers
         
     def __call__(self, img_path, annotations):
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB).astype(np.float32)
         
+        # If there is no annotation in the image
         if len(annotations["analysis_results"]) == 0:
             return np.zeros_like(img[..., 0])
         
         annots = list(map(self.__read_annotations, annotations["analysis_results"]))
         
-        self.iog_dataset.change_image(img, annots)
-        samples = []
-        for idx in range(len(self.iog_dataset)):
-            samples.append(self.iog_dataset[idx])
-                
+        self.iog_dataset.change_image(img, annots)        
+        iog_dataloader = DataLoader(self.iog_dataset, batch_size=self.batch_size,
+                                    shuffle=False, num_workers=self.num_workers)
+        results = np.zeros_like(img[..., 0])
         with torch.no_grad():
-            inputs = torch.stack([sample['concat'] for sample in samples], 0)
-            if self.use_cuda: inputs = inputs.cuda()
-            outputs = self.net.forward(inputs)[-1]
-            preds = np.stack([np.transpose(output, (1,2,0)) for output in outputs.data.cpu().numpy()], 0)
-            preds = 1. / (1. + np.exp(-preds))
-            preds = preds[..., 0]
-            results = np.zeros_like(img[..., 0])
-            for pred, sample in zip(preds, samples):
-                gt = tens2image(sample['gt'])
-                bbox = get_bbox(gt, pad=30, zero_pad=True)
-                results = results + crop2fullmask(pred, bbox, gt, zero_pad=True, relax=0,mask_relax=False) 
-                results[results > 1.] = 1.
-        
+            for sample_concat, sample_gt, sample_category in iog_dataloader:
+                if self.use_cuda:
+                    sample_concat = sample_concat.cuda()
+                outputs = self.net.forward(sample_concat)[-1]
+                preds = np.stack([np.transpose(output, (1,2,0)) for output in outputs.data.cpu().numpy()], 0)
+                preds = 1. / (1. + np.exp(-preds))
+                preds = preds[..., 0]
+                for pred, gt_sample in zip(preds, sample_gt):
+                    gt = tens2image(gt_sample)
+                    bbox = get_bbox(gt, pad=30, zero_pad=True)
+                    results = results + crop2fullmask(pred, bbox, gt, zero_pad=True, relax=0,mask_relax=False)
+                    results[results > 1.] = 1.
+                
         if self.threshold is not None:
             results[results < self.threshold] = 0.
         
