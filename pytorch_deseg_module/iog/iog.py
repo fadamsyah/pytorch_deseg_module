@@ -93,15 +93,15 @@ class IoGNetwork(object):
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB).astype(np.float32)
         
+        if len(annotations["analysis_results"]) == 0:
+            return np.zeros_like(img[..., 0])
+        
         annots = list(map(self.__read_annotations, annotations["analysis_results"]))
         
         self.iog_dataset.change_image(img, annots)
         samples = []
         for idx in range(len(self.iog_dataset)):
             samples.append(self.iog_dataset[idx])
-            
-        if len(samples) == 0:
-            return np.zeros_like(img[..., 0])
                 
         with torch.no_grad():
             inputs = torch.stack([sample['concat'] for sample in samples], 0)
