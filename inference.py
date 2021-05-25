@@ -27,6 +27,8 @@ def get_args():
                         help='persentase iou max. untuk menganggap 2 objek itu berbeda (0 - 1)')
     parser.add_argument('--iog_weights_path', type=str, default='models/IOG_PASCAL_SBD.pth',
                         help='IoG weights')
+    parser.add_argument('--iog_batch_size', type=int, default=4, help='batch size for IoG')
+    parser.add_argument('--iog_num_workers', type=int, default=4, help='the number of workers for IoG dataloader')
 
     args = parser.parse_args()
     return args
@@ -45,7 +47,9 @@ if __name__ == "__main__":
     iog = IoGNetwork(pretrain_path=opt.iog_weights_path,
                      interpolation=cv2.INTER_CUBIC,
                      use_cuda=opt.use_cuda,
-                     threshold=0.9)
+                     threshold=0.9,
+                     batch_size=opt.iog_batch_size,
+                     num_workers=opt.iog_num_workers)
     
     # Detect objects
     det_outputs = detector(opt.img_path, opt.use_url,
