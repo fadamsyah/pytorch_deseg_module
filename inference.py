@@ -11,14 +11,14 @@ from pytorch_deseg_module import IoGNetwork
 
 def get_args():
     parser = argparse.ArgumentParser('Deteksi Sel Telur Fasciola')
-    parser.add_argument('--project', type=str, default='sel_telur', help='object detection parameters')
+    parser.add_argument('-p', '--project', type=str, default='sel_telur', help='object detection parameters')
     parser.add_argument('--img_path', type=str, default='test/sample.jpg',
                         help='path image nya')
     parser.add_argument('--use_url', type=boolean_string, default=False,
                         help='True apabila menggunakan url untuk load gambarnya. False kalau load gambar dari local')
     parser.add_argument('--use_cuda', type=boolean_string, default=False,
                         help='True kalau mau pake GPU yang ada CUDA nya. False kalau pakai CPU aja')
-    parser.add_argument('--det_compound_coef', type=int, default=2, help='coefficients of efficientdet')
+    parser.add_argument('-c', '--det_compound_coef', type=int, default=2, help='coefficients of efficientdet')
     parser.add_argument('--det_weights_path', type=str, default='weights/efficientdet-d2_80_4536.pth',
                         help='EfficientDet weights')
     parser.add_argument('--det_threshold', type=float, default=0.5,
