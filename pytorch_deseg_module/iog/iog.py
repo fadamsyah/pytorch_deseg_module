@@ -4,11 +4,41 @@
 import numpy as np
 import cv2
 import torch
-from torchvision import transforms
 from copy import deepcopy
+from torchvision import transforms
+from torch.utils.data import Dataset, DataLoader
 from .dataloaders import custom_transforms as tr
 from .dataloaders.helpers import *
 from .networks.mainnetwork import *
+
+class IoGDataset(Dataset):
+    def __init__(self, image, annotations, transforms):
+        self.image = image
+        self.annotations = annotations
+        self.transforms = transforms
+        
+    def __len__(self):
+        return len(self.annotations)
+    
+    def __getitem__(self, idx):
+        annot = self.annotations[idx]
+        
+        xmin, ymin, w, h = list(map(int, annot))
+        xmax, ymax = xmin + w, ymin + h
+        
+        # Make a masking
+        bbox = np.zeros_like(self.image[..., 0])
+        bbox[ymin:ymax, xmin:xmax] = 1
+        void_pixels = 1 - bbox
+        
+        iog_input = {'image': self.image, 'gt': bbox, 'void_pixels': void_pixels}
+        iog_input = self.transforms(iog_input)
+        
+        return iog_input
+    
+    def change_image(self, image, annotations):
+        self.image = image
+        self.annotations = annotations
 
 # TODO
 # Adapt to multiclass segmentation
@@ -57,24 +87,18 @@ class IoGNetwork(object):
             tr.ConcatInputs(elems=('crop_image', 'IOG_points')),
             tr.ToTensor()])
         
+        self.iog_dataset = IoGDataset(None, None, self.transforms)
+        
     def __call__(self, img_path, annotations):
         img = cv2.imread(img_path)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB).astype(np.float32)        
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB).astype(np.float32)
         
         annots = list(map(self.__read_annotations, annotations["analysis_results"]))
         
+        self.iog_dataset.change_image(img, annots)
         samples = []
-        for annot in annots:
-            xmin, ymin, w, h = list(map(int, annot))
-            xmax, ymax = xmin + w, ymin + h
-
-            # Make a masking
-            bbox = np.zeros_like(img[..., 0])
-            bbox[ymin:ymax, xmin:xmax] = 1
-            void_pixels = 1 - bbox
-            
-            sample = {'image': img, 'gt': bbox, 'void_pixels': void_pixels}
-            samples.append(self.transforms(sample))
+        for idx in range(len(self.iog_dataset)):
+            samples.append(self.iog_dataset[idx])
             
         if len(samples) == 0:
             return np.zeros_like(img[..., 0])
