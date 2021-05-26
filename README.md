@@ -1,4 +1,4 @@
-# pytorch_deseg_module
+# PyTorch: Detection and Segmentation Module
 
 ## Introduction
 This repository is made as part of my internship at [Neurabot](https://neurabot.io). Shortly, the repository is used to detect objects in images in the field of medical imaging and pathology. Croped images then are segmented using an interactive segmentation technique. The object detection model needs data to learn whereas the segmentation model doesn't require any. The main references are:
@@ -97,6 +97,7 @@ python inference.py --project ki67 --img_path image.jpg --use_cuda True --det_co
 
 ## TODO
 - [X] Add a code to visualize object detection dataset.
+- [X] Add a code to visualize iog segmentation from dataset.
 - [ ] Save the last parameters & the best parameters when training `efficientdet_train.py`.
 - [ ] Generalize the [IoGNetwork](pytorch_deseg_module/iog/iog.py) for multi-class segmentation.
-- [ ] Use the PyTorch dataloader on [IoGNetwork](pytorch_deseg_module/iog/iog.py) to specify the batch_size when inferencing.
+- [X] Use the PyTorch dataloader on [IoGNetwork](pytorch_deseg_module/iog/iog.py) to specify the batch_size when inferencing.
