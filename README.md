@@ -85,6 +85,9 @@ Coming soon ...
 # Visualize a sample of dataset
 python efficientdet_dataset_viz.py -p ki67 --set_name val --transform False --resize False --idx 0
 
+# Visualize an iog segmentation output from dataset
+python iog_dataset_viz.py -p ki67 --set_name test --idx 0 --image_name output.jpg --iog_weights_path weights.pth --iog_obj_idx 0
+
 # A sample training command
 python efficientdet_train.py -p ki67 -c 0 --head_only True --lr 5e-4 --weight_decay 1e-5 --batch_size 16 --load_weights weights.pth --num_epochs 20
 
