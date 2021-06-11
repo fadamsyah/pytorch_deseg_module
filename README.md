@@ -101,6 +101,6 @@ python inference.py --project ki67 --img_path image.jpg --use_cuda True --det_co
 ## TODO
 - [X] Add a code to visualize object detection dataset.
 - [X] Add a code to visualize iog segmentation from dataset.
-- [ ] Save the last parameters & the best parameters when training `efficientdet_train.py`.
+- [X] Save the last parameters & the best parameters when training `efficientdet_train.py`.
 - [ ] Generalize the [IoGNetwork](pytorch_deseg_module/iog/iog.py) for multi-class segmentation.
 - [X] Use the PyTorch dataloader on [IoGNetwork](pytorch_deseg_module/iog/iog.py) to specify the batch_size when inferencing.
