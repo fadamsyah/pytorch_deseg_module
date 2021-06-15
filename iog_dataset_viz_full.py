@@ -87,4 +87,6 @@ if __name__ == '__main__':
     iog_outputs = cv2.cvtColor(iog_outputs, cv2.COLOR_GRAY2RGB)
     
     # Save the segmentation output
-    cv2.imwrite(opt.image_name, iog_outputs)
+    if opt.image_name is not None:
+        cv2.imwrite(f'test/output_{opt.image_name}', iog_outputs)
+        cv2.imwrite(f'test/original_{opt.image_name}', cv2.imread(img_path))
