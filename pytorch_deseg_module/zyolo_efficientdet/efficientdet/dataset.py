@@ -148,6 +148,20 @@ class CocoAlbumentationsDataset(CocoDataset):
 
         return annotations
 
+class CocoAlbumentationsDatasetV2(CocoAlbumentationsDataset):
+    def __init__(self, root_dir, set='train2017', transform=None, img_size=512, resize=True):
+        super().__init__(root_dir, set, transform, img_size, resize)
+        self.resizer = Resizer(img_size)
+        self.resize = resize
+        
+    def load_image(self, image_index):
+        image_info = self.coco.loadImgs(self.image_ids[image_index])[0]
+        path = os.path.join(self.root_dir, self.set_name, image_info['file_name'])
+        img = cv2.imread(path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        return img.astype(np.float32)
+
 def collater(data):
     imgs = [s['img'] for s in data]
     annots = [s['annot'] for s in data]
