@@ -160,7 +160,7 @@ class CocoAlbumentationsDatasetV2(CocoAlbumentationsDataset):
         img = cv2.imread(path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-        return img.astype(np.float32)
+        return img.astype(np.uint8)
 
 def collater(data):
     imgs = [s['img'] for s in data]
