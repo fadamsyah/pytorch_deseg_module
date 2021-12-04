@@ -53,9 +53,13 @@ def visualize(img_path, classes, results, save_labeled_path=None, seed=42):
         
         bb = obj['bbox']
         xmin, xmax, ymin, ymax = bb['xmin'], bb['xmax'], bb['ymin'], bb['ymax']
-                
+        
         cv2.rectangle(img, (xmin, ymin), (xmax, ymax), color, 2)
-    
+        
+        score = obj['score']
+        cv2.putText(img, f'{category}: {score*100:.2f}', (xmin, ymin-5),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 1, cv2.LINE_AA)
+        
     if save_labeled_path:
         cv2.imwrite(save_labeled_path, img)
     
@@ -71,7 +75,7 @@ if __name__ == "__main__":
                                opt.det_weights_path, opt.use_cuda,
                                eval(params['anchors_ratios']),
                                eval(params['anchors_scales']))
-        
+    
     # Detect objects
     det_outputs = detector(opt.img_path, opt.use_url,
                            opt.det_threshold, opt.det_iou_threshold)
