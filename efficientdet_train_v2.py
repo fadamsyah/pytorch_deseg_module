@@ -282,11 +282,7 @@ def train(opt):
                     writer.add_scalar('learning_rate', current_lr, step)
 
                     step += 1
-
-                    # if step % opt.save_interval == 0 and step > 0:
-                    #     save_checkpoint(model, f'efficientdet-d{opt.compound_coef}_{epoch}_{step}.pth')
-                    #     print('checkpoint...')
-
+                    
                 except Exception as e:
                     print('[Error]', traceback.format_exc())
                     print(e)
@@ -331,12 +327,11 @@ def train(opt):
                     best_loss = loss
                     best_epoch = epoch
 
-                    save_checkpoint(model, f'efficientdet-d{opt.compound_coef}_{epoch}_{step}.pth')
+                    save_checkpoint(model, f'best-efficientdet-d{opt.compound_coef}_{epoch}_{step}.pth')
 
                 model.train()
 
     except KeyboardInterrupt:
-        # save_checkpoint(model, f'efficientdet-d{opt.compound_coef}_{epoch}_{step}.pth')
         writer.close()
     writer.close()
 
