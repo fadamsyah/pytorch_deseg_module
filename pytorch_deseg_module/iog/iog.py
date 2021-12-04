@@ -47,7 +47,7 @@ class IoGNetwork(object):
                  output_stride=16, sync_bn=None, freeze_bn=False,
                  pretrain_path='models/IOG_PASCAL_SBD.pth', use_cuda=False,
                  interpolation=cv2.INTER_LINEAR, threshold=None,
-                 batch_size=4, num_workers=4):
+                 batch_size=4, num_workers=4, crop_size=(512, 512)):
         
         # Threshold
         self.threshold = threshold
@@ -76,9 +76,9 @@ class IoGNetwork(object):
         self.transforms = transforms.Compose([
             tr.CropFromMask(crop_elems=('image', 'gt','void_pixels'), relax=30, zero_pad=True),
             tr.FixedResize(resolutions={'gt': None,
-                                        'crop_image': (512, 512),
-                                        'crop_gt': (512, 512),
-                                        'crop_void_pixels': (512, 512)},
+                                        'crop_image': crop_size,
+                                        'crop_gt': crop_size,
+                                        'crop_void_pixels': crop_size},
                            flagvals={'gt' : interpolation,
                                      'crop_image' : interpolation,
                                      'crop_gt' : interpolation,
