@@ -24,6 +24,8 @@ def get_args():
                         help='persentase output min. untuk dianggap sebagai objek (0 - 1)')
     parser.add_argument('--det_iou_threshold', type=float, default=0.5,
                         help='persentase iou max. untuk menganggap 2 objek itu berbeda (0 - 1)')
+    parser.add_argument('--text_font_scale', type=float, default=0.5, help='fontScale of category dan probability text')
+    parser.add_argument('--text_font_thickness', type=int, default=1, help='font thickness of category and probability text')
     
     args = parser.parse_args()
     return args
@@ -55,7 +57,7 @@ def visualize(img_path, classes, results, save_labeled_path=None, seed=42):
         cv2.rectangle(img, (xmin, ymin), (xmax, ymax), color, 2)
         
         score = obj['score']
-        cv2.putText(img, f'{category}: {score*100:.2f}', (xmin, ymin-5),
+        cv2.putText(img, f'{score*100:.2f}: {category}', (xmin, ymin-5),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 1, cv2.LINE_AA)
         
     if save_labeled_path:
