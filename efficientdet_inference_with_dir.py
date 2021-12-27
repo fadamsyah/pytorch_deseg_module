@@ -39,7 +39,7 @@ def get_class_color(classes, seed=42):
     
     return colors
 
-def visualize(img_path, classes, results, save_labeled_path=None, seed=42):
+def visualize(img_path, classes, results, fontScale, thickness, save_labeled_path=None, seed=42):
     img = cv2.imread(img_path)
     
     colors = get_class_color(classes, seed=seed)
@@ -58,7 +58,8 @@ def visualize(img_path, classes, results, save_labeled_path=None, seed=42):
         
         score = obj['score']
         cv2.putText(img, f'{score*100:.2f}: {category}', (xmin, ymin-5),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 1, cv2.LINE_AA)
+                    cv2.FONT_HERSHEY_SIMPLEX, fontScale, (255,0,0),
+                    thickness, cv2.LINE_AA)
         
     if save_labeled_path:
         cv2.imwrite(save_labeled_path, img)
@@ -91,4 +92,5 @@ if __name__ == "__main__":
         results = det_outputs['analysis_results']
         
         # Visualize the result
-        visualize(image_path, classes, results, save_path, seed=42)
+        visualize(image_path, classes, results, opt.text_font_scale,
+                  opt.text_font_thickness, save_path, seed=42)
